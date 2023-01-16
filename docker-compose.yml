@@ -25,6 +25,11 @@ services:
       MYSQL_DATABASE: payhere
       MYSQL_USER: payhere
       MYSQL_PASSWORD: payhere
+    # dbeaver 사용을 위한 expose
+    expose:
+      - "3306"
+    ports:
+      - "3306:3306"
     command:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci

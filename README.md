@@ -1,10 +1,13 @@
 ## dir 구조
-![dir구조](./dir_path.png)
+![dir구조](./img/dir_path.png)
 
 ## Server(FastAPI)
 
 
 ## DB(MySQL)
+### 테이블 DDL
+![DB구조](./img/DB.png)
+
 ### 테이블
 ```SQL
 create table user (email_index int not null auto_increment, email varchar(256) not null, password(100) varchar not null, primary key(email_index), unique(email));
