@@ -9,6 +9,8 @@ from module.utils import *
 
 # 메모 추가
 async def add_account(email: str, data: AccountData) -> Response:
+    if data.money < 0:
+        return Response(status=False, message="금액은 0보다 작을 수 없습니다.", data=None)
     try:
         conn = await connect_to_db()
         with conn.cursor(pymysql.cursors.DictCursor) as cursor:
@@ -34,6 +36,8 @@ async def add_account(email: str, data: AccountData) -> Response:
 
 # 메모 수정
 async def update_account(email: str, data: UpdateAccountData) -> Response:
+    if data.money < 0:
+        return Response(status=False, message="금액은 0보다 작을 수 없습니다.", data=None)
     try:
         conn = await connect_to_db()
         with conn.cursor(pymysql.cursors.DictCursor) as cursor:
@@ -146,10 +150,9 @@ async def copy_account_detail(email: str, account_index: int) -> Response:
             sql += "null," if result["note"] is None else "%(note)s,"
             if result["note"] is not None:
                 sql_data["note"] = result["note"]
-            sql += "null," if result["type"] is None else "%(type)s,"
+            sql += "null)" if result["type"] is None else "%(type)s)"
             if result["type"] is not None:
                 sql_data["type"] = result["type"]
-            sql += "null," if result["url"] is None else "%(url)s,"
             cursor.execute(sql, sql_data)
             conn.commit()
 
@@ -162,7 +165,7 @@ async def copy_account_detail(email: str, account_index: int) -> Response:
     return Response(status=True, message="가계부 세부 내역 복제에 성공했습니다.", data=None)
 
 
-# 특정 세부내역 공유하는 URL 생성
+# 특정 세부내역 공유하는 URL 생성(5분지속)
 async def create_account_detail_url(email: str, account_index: int, data) -> Response:
     try:
         conn = await connect_to_db()
@@ -201,11 +204,13 @@ async def create_account_detail_url(email: str, account_index: int, data) -> Res
     finally:
         await close_db(conn)
 
-    return Response(status=True, message="가계부 세부 내역 복제에 성공했습니다.", data=url)
+    return Response(status=True, message="url생성을 성공했습니다.", data=url)
 
 
 # url로 세부내역 조회
 async def get_account_detail_by_url(email: str, url: str) -> Response:
+    if len(url) != 8:
+        return Response(status=False, message="잘못된 url입니다.", data=None)
     try:
         conn = await connect_to_db()
         with conn.cursor(pymysql.cursors.DictCursor) as cursor:
@@ -240,4 +245,5 @@ async def get_account_detail_by_url(email: str, url: str) -> Response:
 
     finally:
         await close_db(conn)
+        
     return Response(status=True, message="가계부 세부 내역 공유에 성공했습니다.", data=response_result)

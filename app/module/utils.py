@@ -14,7 +14,7 @@ algorithm = "HS256"
 secret_key = "payhere"
 
 
-async def connect_to_db():
+async def connect_to_db() -> pymysql.connect:
     conn = pymysql.connect(
         host="db",
         user="payhere",
@@ -26,11 +26,11 @@ async def connect_to_db():
     return conn
 
 
-async def close_db(conn):
+async def close_db(conn) -> None:
     conn.close()
 
 
-async def test_db():
+async def test_db() -> str:
     try:
         conn = await connect_to_db()
 
@@ -50,7 +50,7 @@ async def test_db():
 
 
 # 액세스 토큰 검증
-def verify_token(token: str, token_type: str = "access"):
+def verify_token(token: str, token_type: str = "access") -> Response:
     try:
         decoded_token = jwt.decode(token, secret_key, algorithms=[algorithm])
         return Response(status=True, message="토큰 검증 성공", data=decoded_token["email"])
@@ -59,33 +59,33 @@ def verify_token(token: str, token_type: str = "access"):
 
 
 # 시간대 설정
-def convert_kst():
+def convert_kst() -> str:
     dt_tm_utc = datetime.strptime(
         time.strftime("%Y-%m-%d %H:%M:%S"), "%Y-%m-%d %H:%M:%S"
     )
-    dt_tm_kst = dt_tm_utc + timedelta(hours=9)
+    dt_tm_kst = dt_tm_utc + timedelta(hours=9) + timedelta(minutes=5)
     str_date = dt_tm_kst.strftime("%Y-%m-%d %H:%M:%S")
     return str_date
 
 
 # uuid 생성
-def make_uuid(length=8):
+def make_uuid(length=8) -> str:
     return str(uuid.uuid4()).replace("-", "")[:length]
 
 
-# 5분마다 주기적으로 동작
-def repeat_every_five_minute():
-    print("repeat_every_five_minute", flush=True)
+# 1분마다 주기적으로 동작
+def repeat_every_minute() -> None:
+    print("repeat_every_minute", flush=True)
     asyncio.run(delete_db_repeat())
 
 
 # DB 접속 후 데이터 삭제
-async def delete_db_repeat():
+async def delete_db_repeat() -> None:
     try:
         conn = await connect_to_db()
 
         with conn.cursor(pymysql.cursors.DictCursor) as cursor:
-            sql = "DELETE FROM url WHERE DATE_ADD(create_time_url, interval 5 minute) > NOW()"
+            sql = "DELETE FROM url WHERE create_time_url < date_add(NOW(), interval 9 hour)"
             cursor.execute(sql)
             conn.commit()
             print("delete", flush=True)

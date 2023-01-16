@@ -67,8 +67,3 @@ async def auth_refresh_token(refresh_token: str = Header(...)):
         )
     else:
         raise HTTPException(status_code=400, detail="Invalid refresh token")
-
-
-# 토큰 확인
-
-# auth2 인증

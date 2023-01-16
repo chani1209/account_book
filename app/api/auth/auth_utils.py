@@ -34,7 +34,7 @@ def email_validation(email: str):
 
 
 # 이메일 중복 검사
-async def email_duplicate_check(email: str):
+async def email_duplicate_check(email: str) -> bool:
     try:
         conn = await connect_to_db()
 
@@ -56,7 +56,7 @@ async def email_duplicate_check(email: str):
 
 
 # 비밀번호 해시
-def get_password_hash(password: str):
+def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
 
 
@@ -114,12 +114,12 @@ async def login(data) -> Response:
 
 
 # 비밀번호 검증
-def verify_password(plain_password, hashed_password):
+def verify_password(plain_password, hashed_password) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
 
 # 액세스 토큰 생성(유효기간 1시간, 담겨있는 정보 이메일)
-def create_token(email: str, expires_delta: timedelta = None):
+def create_token(email: str, expires_delta: timedelta = None) -> str:
     data = {"email": email}
     if expires_delta:
         expire = datetime.utcnow() + expires_delta

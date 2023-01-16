@@ -3,7 +3,8 @@ version: "3.5"
 services:
   api:
     build: ./app
-    image: server:0.2
+    # 개발시 사용한 이미지 -> 없으면 자동으로 빌드
+    # image: server:0.2
     container_name: api
     ports:
       - "500:500"
@@ -14,9 +15,11 @@ services:
     command: "500"
 
     networks:
-      - server
+      - payhere
 
   db:
+    # build: ./DB
+    # 개발시 사용한 이미지 -> 없으면 자동으로 빌드
     image: mysql:5.7
     container_name: db
     # platform: : linux/amd64
@@ -26,26 +29,23 @@ services:
       MYSQL_USER: payhere
       MYSQL_PASSWORD: payhere
     # dbeaver 사용을 위한 expose
-    expose:
-      - "3306"
-    ports:
-      - "3306:3306"
+    # expose:
+    #   - "3306"
+    # ports:
+    #   - "3306:3306"
     command:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
-
-    
     volumes:
       - type: bind
         source: ./DB/data
         target: /var/lib/mysql
 
     networks:
-      - server
+      - payhere
 
 networks:
-  server:
-    external: true
-
+  payhere:
+    driver: bridge
 
 

@@ -56,7 +56,7 @@ app.include_router(auth.router, prefix="", tags=["test"])
 from apscheduler.schedulers.background import BackgroundScheduler
 
 sched = BackgroundScheduler(daemon=True, timezone="Asia/Seoul")
-sched.add_job(repeat_every_five_minute, "interval", minutes=5)
+sched.add_job(repeat_every_minute, "interval", seconds=10)
 sched.start()
 
 
@@ -69,6 +69,6 @@ def favicon():
 
 # 개통 테스트
 @app.get("/")
-async def root():
+async def root() -> JSONResponse:
     message = await test_db()
     return JSONResponse(status_code=200, content={"message": message})
