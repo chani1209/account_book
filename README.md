@@ -1,28 +1,5 @@
 ## dir 구조
-.
-├── app  
-│   ├── Dockerfile  
-│   ├── api  
-│   │   ├── account  
-│   │   │   ├── account.py  
-│   │   │   └── account_utils.py  
-│   │   └── auth  
-│   │       ├── auth.py  
-│   │       └── auth_utils.py   
-│   ├── main.py  
-│   ├── model  
-│   │   └── classes.py  
-│   ├── module  
-│   │   └── utils.py  
-│   ├── requirements.txt  
-│   └── static  
-│       ├── favicon.ico  
-│       └── logo.png  
-├── DB  
-│   └── Dockerfile  
-├── .gitignore  
-├── docker-compose.yml  
-└── README.md  
+![dir구조](./dir_path.png)
 
 ## Server(FastAPI)
 
